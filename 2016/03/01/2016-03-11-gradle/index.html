@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="技术," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="gradle">
+<meta name="keywords" content="技术">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用gradle并依赖fresco碰到的邪门问题">
+<meta property="og:url" content="http://yoursite.com/2016/03/01/2016-03-11-gradle/index.html">
+<meta property="og:site_name" content="henry blog">
+<meta property="og:description" content="gradle">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://7xr4xe.com1.z0.glb.clouddn.com/gradle%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="http://7xr4xe.com1.z0.glb.clouddn.com/gradle%E9%85%8D%E7%BD%AE.png">
+<meta property="og:updated_time" content="2017-02-17T12:15:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用gradle并依赖fresco碰到的邪门问题">
+<meta name="twitter:description" content="gradle">
+<meta name="twitter:image" content="http://7xr4xe.com1.z0.glb.clouddn.com/gradle%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/03/01/2016-03-11-gradle/"/>
+
+
+
+
+
+  <title>使用gradle并依赖fresco碰到的邪门问题 | henry blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?685707a993a8a29f9a7637ee1b1c42c4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">henry blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/01/2016-03-11-gradle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="henry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="henry blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用gradle并依赖fresco碰到的邪门问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-01T00:00:00+08:00">
+                2016-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/blog/" itemprop="url" rel="index">
+                    <span itemprop="name">blog</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/01/2016-03-11-gradle/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/01/2016-03-11-gradle/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  gradle
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>前几天项目中有加载gif的新需求，去github上搜罗了一遍，发现了一个gifview的控件，试用之后发现并不理想，后来跟我们老大商量过之后决定试用facebook的加载图片库fresco，由于我们项目使用的ide是ADT，所以要依赖fresco变了稍许麻烦，fresco给eclipse提供了四个依赖库，<a href="http://www.fresco-cn.org/" target="_blank" rel="noopener">fresco中文文档</a>，文档中有具体描述，不再赘述；加上了fresco并依赖，使用eclipse的ant编译之后一切正常，就在最后在批量打包正式版的时候碰到了棘手的问题：我们的打包渠道大概有十几个，我们使用的gradle批量编译打包，中间碰到了好多问题，下面详细说明。</p>
+<h2 id="gradle"><a href="#gradle" class="headerlink" title="gradle"></a>gradle</h2><p>首先解释下什么是gradle以及常用的命令（其实是对我自己说的，免去以后忘记命令重新google）</p>
+<h3 id="官方解释"><a href="#官方解释" class="headerlink" title="官方解释"></a>官方解释</h3><p>Gradle是一个基于Apache Ant和Apache Maven概念的项目自动化建构工具。它使用一种基于Groovy的特定领域语言来声明项目设置，而不是传统的XML。当前其支持的语言限于Java、Groovy和Scala，计划未来将支持更多的语言。</p>
+<h3 id="通俗解释"><a href="#通俗解释" class="headerlink" title="通俗解释"></a>通俗解释</h3><p>上面是维基上对Gradle的解释,相信一个没有接触过构建的人是不大能看明白的,当初我也是.下面是我对Gradle通俗的理解:    软件开发讲究代码复用,通过复用可以使工程更易维护,代码量更少….. 开发者可以通过继承,组合,函数模块等实现不同程度上的代码复用.但不知你有没有想过,软件开发也是一种工程作业,绝不仅仅是写代码,还涉及到工程的各种管理(依赖,打包,部署,发布,各种渠道的差异管理…..),你每天都在build,clean,签名,打包,发布,有没有想过这种过程,也可以像代码一样被描述出来, 也可以被复用。</p>
+<h3 id="差异管理"><a href="#差异管理" class="headerlink" title="差异管理"></a>差异管理</h3><p>通过Gradle可以实现一个命令打出所有的渠道包,一个命令打出指定的渠道包.再复杂一点,你可能需要不同的渠道对应不同的签名文件,不同的icon,不同的服务器地址…这些都可以通过Gradle来方便的实现。</p>
+<h3 id="依赖管理"><a href="#依赖管理" class="headerlink" title="依赖管理:"></a>依赖管理:</h3><p>做软件开发你可能需要依赖各种不同的jar,library.你当然可以通过将.jar/library工程下载到本地再copy到你的工程中,但不知你是否听说过国外有个叫中央仓库的东西,在这个仓库里你可以找到所有你能想到以及你从来没听说过的jar,aar，并且只用通过一行命令搞定依赖</p>
+<blockquote>
+<p>compile ‘com.facebook.fresco:fresco:0.9.0+’</p>
+</blockquote>
+<h3 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h3><p><img src="http://7xr4xe.com1.z0.glb.clouddn.com/gradle%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84.png" alt=""></p>
+<p>图片中的项目是stromzhang的开源项目<a href="https://github.com/stormzhang/9GAG" target="_blank" rel="noopener">9GAG</a>，拿来举例，再次感谢；<br>红色标记是gradle的配置文件，结构必须是这样滴，下面我们一步一步来说明：</p>
+<ol>
+<li>9GAG/app/build.gradle</li>
+</ol>
+<p>这个文件是app文件夹下这个Module的gradle配置文件，也可以算是整个项目最主要的gradle配置文件，我们来看下这个文件的内容：<br><img src="http://7xr4xe.com1.z0.glb.clouddn.com/gradle%E9%85%8D%E7%BD%AE.png" alt=""></p>
+<p>这里需要说明几点：</p>
+<ul>
+<li>文件开头apply plugin是最新gradle版本的写法，以前的写法是apply plugin: ‘android’, 如果还是以前的写法，请改正过来。</li>
+</ul>
+<ul>
+<li>buildToolsVersion这个需要你本地安装该版本才行，很多人导入新的第三方库，失败的原因之一是build version的版本不对，这个可以手动更改成你本地已有的版本或者打开 SDK Manager 去下载对应版本。</li>
+</ul>
+<ul>
+<li>applicationId代表应用的包名，也是最新的写法，这里就不在多说了。</li>
+</ul>
+<ul>
+<li>android 5.0开始默认安装jdk1.7才能编译，但是由于mac系统自带jdk的版本是1.6，所以需要手动下载jdk1.7并配置下，具体可以见我这篇博客Mac下安装和管理Java</li>
+</ul>
+<ul>
+<li>minifyEnabled也是最新的语法，很早之前是runProguard,这个也需要更新下。</li>
+</ul>
+<ul>
+<li>proguardFiles这部分有两段，前一部分代表系统默认的android程序的混淆文件，该文件已经包含了基本的混淆声明，免去了我们很多事，这个文件的目录在 <strong>/tools/proguard/proguard-android.txt</strong> , 后一部分是我们项目里的自定义的混淆文件，目录就在 <strong>app/proguard-rules.txt</strong> , 如果你用Studio 1.0创建的新项目默认生成的文件名是 <strong>proguard-rules.pro</strong> , 这个名字没关系，在这个文件里你可以声明一些第三方依赖的一些混淆规则，由于是开源项目，9GAG里并未进行混淆，具体混淆的语法也不是本篇博客讨论的范围。最终混淆的结果是这两部分文件共同作用的。</li>
+</ul>
+<ul>
+<li>compile project(‘:extras:ShimmerAndroid’)这一行是因为9GAG中存在其他Module，不知道Module的概念可以看下这篇博客Android Studio系列教程二–基本设置与运行, 总之你可以理解成Android Library，由于Gradle的普及以及远程仓库的完善，这种依赖渐渐的会变得非常不常见，但是你需要知道有这种依赖的。</li>
+</ul>
+<p>以上文件里的内容只是基本配置，其实还有很多自定义部分，如自动打包debug，release，beta等环境，签名，多渠道打包等，后续会单独拿出来讲解。</p>
+<ol start="2">
+<li><p>9GAG/extras/ShimmerAndroid/build.gradle<br>每一个Module都需要有一个gradle配置文件，语法都是一样，唯一不同的是开头声明的是 apply plugin: ‘com.android.library’</p>
+</li>
+<li><p>9GAG/gradle<br>这个目录下有个 wrapper 文件夹，里面可以看到有两个文件，是gradle内部的配置文件，定义了gradle的目录，依赖下载目录和gradle版本，一般不用管。</p>
+</li>
+<li><p>9GAG/build.gradle<br>这个文件是整个项目的gradle基础配置文件,我们来看看这里面的内容</p>
+<pre><code>// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath &apos;com.android.tools.build:gradle:1.0.0&apos;
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+</code></pre></li>
+</ol>
+<p>内容主要包含了两个方面：一个是声明仓库的源，这里可以看到是指明的jcenter(), 之前版本则是mavenCentral(), jcenter可以理解成是一个新的中央远程仓库，兼容maven中心仓库，而且性能更优。另一个是声明了android gradle plugin的版本，android studio 1.0正式版必须要求支持gradle plugin 1.0的版本。</p>
+<ol start="5">
+<li>9GAG/settings.gradle</li>
+</ol>
+<p>这个文件是全局的项目配置文件，里面主要声明一些需要加入gradle的module，我们来看看9GAG该文件的内容：</p>
+<pre><code>include &apos;:app&apos;, &apos;:extras:ShimmerAndroid&apos;
+</code></pre><p>文件中的 app, extras:ShimmerAndroid 都是module，如果还有其他module都需要按照如上格式加进去。</p>
+<h3 id="gradle常用命令"><a href="#gradle常用命令" class="headerlink" title="gradle常用命令"></a>gradle常用命令</h3><ul>
+<li>gradle -v 版本号</li>
+<li>gradle clean 清除项目下的build目录</li>
+<li>gradle build 检查依赖并编译打包    这里注意的是 ./gradlew build 命令把debug、release环境的包都打出来，如果正式发布只需要打Release的包，该怎么办呢，下面介绍一个很有用的命令 <strong>assemble</strong>, 如</li>
+<li>gradle assembleDebug 编译并打Debug包</li>
+<li>gradle assembleRelease 编译并打Release包，除此之外，assemble还可以和productFlavors结合使用，如：</li>
+<li>gradle assembleBaiduRelease 只打出百度的release包</li>
+<li>gradle assembleBaidu 打出百度的release和debug包</li>
+<li>gradle assembleRelease 打包全部渠道的release包</li>
+<li>gradle installRelease 打包并安装release包</li>
+<li>gradle uninstallRelease 下载release包</li>
+</ul>
+<p>分渠道批量打包以后另作说明。</p>
+<h3 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h3><p>好了，上面说了这么多基础知识，现在改解决问题了，当时gradle的编译问题是这样出现的，</p>
+<h4 id="前提：我们的ide是eclipse，打包工具是gradle，项目中我们依赖了fresco第三方库；"><a href="#前提：我们的ide是eclipse，打包工具是gradle，项目中我们依赖了fresco第三方库；" class="headerlink" title="前提：我们的ide是eclipse，打包工具是gradle，项目中我们依赖了fresco第三方库；"></a>前提：我们的ide是eclipse，打包工具是gradle，项目中我们依赖了fresco第三方库；</h4><h4 id="解决方法1："><a href="#解决方法1：" class="headerlink" title="解决方法1："></a>解决方法1：</h4><p>首先下载了fresco的eclipse支持的lib，并依赖成功，然后开始把我们的项目构造成gradle支持的项目结构，我在eclipse的项目中添加了gradle文件，让项目能够支持gradle（了解添加gradel文件请回去读gradle项目结构）<br>其中一个重要的地方：</p>
+<pre><code>android {  
+    sourceSets {  
+        main {  
+            manifest.srcFile &apos;AndroidManifest.xml&apos;  
+            java.srcDirs = [&apos;src&apos;]  
+            resources.srcDirs = [&apos;src&apos;]  
+            aidl.srcDirs = [&apos;src&apos;]  
+            renderscript.srcDirs = [&apos;src&apos;]  
+            res.srcDirs = [&apos;res&apos;]  
+            assets.srcDirs = [&apos;assets&apos;]  
+        }  
+        androidTest.setRoot(&apos;tests&apos;)  
+    }  
+} 
+</code></pre><p>上面的gradle的配置可以在打包的时候重新定义eclipse项目的结构，这样支持gradle了，然后写gradle的配置文件settings.gradle</p>
+<pre><code>include &apos;:MainActivity&apos;,&apos;:frescolib:fresco&apos;,&apos;:frescolib:drawee&apos;,&apos;:frescolib:fbcore&apos;,&apos;:frescolib:imagepipeline&apos;
+</code></pre><p>这句话的意思是让gradle知道我们工程下包含了这几个项目，当然MainActivity是我们的主项目，其余四个是fresco依赖库，然后分别配置fresco的gradle文件（详细见上面提到的gradle项目结构，没错，就按照那种结构配置），之后gradle clean, gradle check，这时候问题出现了，呕，原来是粗心gradle配置少了括号，修改，再编译，出现了最重要的问题，没错，你也没有看错，就是写这篇文章的目的，现在才出现。。。<br>编译的错误我没有截图，大概是这样子滴：</p>
+<pre><code>UNEXPECTED TOP-LEVEL EXCEPTION Multiple dex files define 巴拉巴拉/BuildConfig
+</code></pre><p>没错就是这个操蛋的BuildConfig的文件卡了我一整天的时间，意思是说在gradle编译的时候BuildConfig文件多次编译，也就是这个文件存在多个地方（其中一个包下包含了，另个包中又包含），我去github上看了fresco的源码，当然看不懂啦，只是去查了BuildConfig文件，然而并没有，fresco项目是用gradle构建的，并不支持ant，为了支持ant（也就是eclipse的构建工具），作者搞出了上面提到的那四个库，查遍了也试遍了所有方法，没有搞定，按照这种思路并没有走通。。。</p>
+<p>花了一天的时候没有解决这个问题很是受挫败，但是也学到了很多东西，对gradle配置和项目结构更加熟悉了。</p>
+<h4 id="解决方法2："><a href="#解决方法2：" class="headerlink" title="解决方法2："></a>解决方法2：</h4><p>方法1走不通就要换思路，这次不在使用坑爹的fresco四个库，而是使用直接使用gradle提供的依赖命令：</p>
+<pre><code>compile &apos;com.facebook.fresco:fresco:0.9.0+&apos;
+</code></pre><p>clean，build，然而路还有很长，问题还有很多，出现了cup兼容问题，fresco使用了so库，几乎兼容了所有cpu，armeabi,armeabi-v7a,armeabi-v8a,x86,x86-64全部支持，那么问题来了，我们项目中也使用有一个第三方的听写库（解决听写问题），然后那个库并没有兼容所有cup，只兼容了armeabi</p>
+<p>这里先说一个小白问题：app在设备上运行的时候，会按照设备本身的cpu类型自动选择使用下的（armeabi,armeabi-v7a,armeabi-v8a,x86,x86-64）中so文件</p>
+<p>那么问题来了，如果设备是armeabi-v8a的cpu，则会执行armeabi-v8a下的so库，然后我们的听写库并有armeabi-v8a，导致crash。</p>
+<p>然后gradle如此强大，怎能没有exclude的功能</p>
+<pre><code>splits {
+    abi {
+        enable true
+        reset()
+        include &apos;armeabi&apos;
+        universalApk false
+    }
+}
+</code></pre><p>这样的话在打包的时候只会编译armeabi，其他几个并不存在。</p>
+<p>继续clean，build，问题又来了，提醒找不到support-v4库，怎么可能，是不是因为我们项目中已经有v4库了呢，我试了一下</p>
+<pre><code>compile (&apos;com.facebook.fresco:fresco:0.9.0+&apos;){
+        exclude module: &apos;support-v4&apos;
+}
+</code></pre><p>果然可以了，问题解决。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/技术/" rel="tag"># 技术</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/01/2016-03-30-question-summary/" rel="next" title="2月份和三月份碰到的问题总结">
+                <i class="fa fa-chevron-left"></i> 2月份和三月份碰到的问题总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/15/2016-07-20-adb-shell/" rel="prev" title="常用 adb shell命令">
+                常用 adb shell命令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2016/03/01/2016-03-11-gradle/"
+           data-title="使用gradle并依赖fresco碰到的邪门问题" data-url="http://yoursite.com/2016/03/01/2016-03-11-gradle/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="henry" />
+            
+              <p class="site-author-name" itemprop="name">henry</p>
+              <p class="site-description motion-element" itemprop="description">吾生也有涯，而知也无涯</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gradle"><span class="nav-number">2.</span> <span class="nav-text">gradle</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方解释"><span class="nav-number">2.1.</span> <span class="nav-text">官方解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通俗解释"><span class="nav-number">2.2.</span> <span class="nav-text">通俗解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#差异管理"><span class="nav-number">2.3.</span> <span class="nav-text">差异管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#依赖管理"><span class="nav-number">2.4.</span> <span class="nav-text">依赖管理:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目结构"><span class="nav-number">2.5.</span> <span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gradle常用命令"><span class="nav-number">2.6.</span> <span class="nav-text">gradle常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决问题"><span class="nav-number">2.7.</span> <span class="nav-text">解决问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前提：我们的ide是eclipse，打包工具是gradle，项目中我们依赖了fresco第三方库；"><span class="nav-number">2.7.1.</span> <span class="nav-text">前提：我们的ide是eclipse，打包工具是gradle，项目中我们依赖了fresco第三方库；</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法1："><span class="nav-number">2.7.2.</span> <span class="nav-text">解决方法1：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法2："><span class="nav-number">2.7.3.</span> <span class="nav-text">解决方法2：</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">henry</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"henry-newbie"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

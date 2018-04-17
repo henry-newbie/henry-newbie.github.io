@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概念bitmap指的是一张jpg，png格式的图片。  创建bitmap的几种方式Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888) 创建一个空的bitmap Bitmap newBitmap = newBitmap.copy(Bitmap.Config.A">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bitmap的使用">
+<meta property="og:url" content="http://yoursite.com/2017/09/16/2017-9-16-bitmap/index.html">
+<meta property="og:site_name" content="henry blog">
+<meta property="og:description" content="概念bitmap指的是一张jpg，png格式的图片。  创建bitmap的几种方式Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888) 创建一个空的bitmap Bitmap newBitmap = newBitmap.copy(Bitmap.Config.A">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-09-16T08:17:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="bitmap的使用">
+<meta name="twitter:description" content="概念bitmap指的是一张jpg，png格式的图片。  创建bitmap的几种方式Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888) 创建一个空的bitmap Bitmap newBitmap = newBitmap.copy(Bitmap.Config.A">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/16/2017-9-16-bitmap/"/>
+
+
+
+
+
+  <title>bitmap的使用 | henry blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?685707a993a8a29f9a7637ee1b1c42c4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">henry blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/16/2017-9-16-bitmap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="henry">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="henry blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">bitmap的使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-16T15:20:02+08:00">
+                2017-09-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/16/2017-9-16-bitmap/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/09/16/2017-9-16-bitmap/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ol>
+<li><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>bitmap指的是一张jpg，png格式的图片。</p>
+</li>
+<li><h4 id="创建bitmap的几种方式"><a href="#创建bitmap的几种方式" class="headerlink" title="创建bitmap的几种方式"></a>创建bitmap的几种方式</h4><p><code>Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888)</code></p>
+<p>创建一个空的bitmap</p>
+<p><code>Bitmap newBitmap = newBitmap.copy(Bitmap.Config.ARGB_8888, true);</code></p>
+<p>拷贝一个相同的bimap</p>
+<p><code>Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, view.getMeasuredWidth(), view.getMeasuredHeight(), matrix, true);</code></p>
+<p>对已有的bitmap进行matrix操作和指定宽高进行裁剪后生成新的bitmap</p>
+<p><code>Bitmap bitmap = BitmapFactory.decodeFile(picFile.getAbsolutePath());</code></p>
+<p>从磁盘中读取图片文件（读取出来的bitmap不能直接通过canvas进行操作，需要创建或copy一个新的bitmap再进行操作）</p>
+</li>
+<li><h4 id="bitmap的位移，缩放等操作"><a href="#bitmap的位移，缩放等操作" class="headerlink" title="bitmap的位移，缩放等操作"></a>bitmap的位移，缩放等操作</h4><p>有两种办法，第一种是在调用createBitmap函数的时候直接设置matrix；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Bitmap bitmap = BitmapFactory.decodeFile(picFile.getAbsolutePath());</span><br><span class="line">Matrix matrix = <span class="keyword">new</span> Matrix();</span><br><span class="line">matrix.postTranslate(<span class="number">100</span>, <span class="number">0</span>);</span><br><span class="line"><span class="comment">//        matrix.postScale(0.5f, 0.5f);</span></span><br><span class="line"><span class="comment">//        matrix.postRotate(90);</span></span><br><span class="line"><span class="comment">//        Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);</span></span><br><span class="line">Bitmap newBitmap = Bitmap.createBitmap(bitmap, <span class="number">0</span>, <span class="number">0</span>, view.getMeasuredWidth(), view.getMeasuredHeight(), matrix, <span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+<p>第二种是通过bitmap创建canvas，对canvas进行操作；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Matrix matrix = <span class="keyword">new</span> Matrix();</span><br><span class="line">matrix.setRotate(<span class="number">90</span>);</span><br><span class="line">canvas.drawBitmap(bitmap, matrix, paint);</span><br></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+<li><h4 id="在bitmap上画图"><a href="#在bitmap上画图" class="headerlink" title="在bitmap上画图"></a>在bitmap上画图</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Bitmap bitmap = BitmapFactory.decodeFile(picFile.getAbsolutePath());</span><br><span class="line">Bitmap newBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, <span class="keyword">true</span>);</span><br><span class="line">Canvas canvas = <span class="keyword">new</span> Canvas(newBitmap);</span><br><span class="line">Paint paint = <span class="keyword">new</span> Paint();</span><br><span class="line">paint.setAntiAlias(<span class="keyword">true</span>);</span><br><span class="line">paint.setTextSize(<span class="number">20</span>);</span><br><span class="line">paint.setColor(Color.BLUE);</span><br><span class="line"><span class="comment">//        canvas.drawRect(30, 60, 80, 200, paint);</span></span><br><span class="line"><span class="comment">//        canvas.rotate(45, 300, 400);</span></span><br><span class="line">canvas.drawText(<span class="string">"测试"</span>, <span class="number">300</span>, <span class="number">400</span>, paint);</span><br></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+<li><h4 id="bitmap和drawable"><a href="#bitmap和drawable" class="headerlink" title="bitmap和drawable"></a>bitmap和drawable</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Drawable newBitmapDrawable = <span class="keyword">new</span> BitmapDrawable(bitmap);</span><br><span class="line">Bitmap bitmap = <span class="keyword">new</span> BitmapDrawable.getBitmap();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 非BitmapDrawable转bitmap</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Bitmap <span class="title">drawableToBitmap</span><span class="params">(Drawable drawable)</span> </span>&#123;</span><br><span class="line">        Bitmap bitmap = Bitmap.createBitmap(</span><br><span class="line">                drawable.getIntrinsicWidth(),</span><br><span class="line">                drawable.getIntrinsicHeight(),</span><br><span class="line">                drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565</span><br><span class="line">        );</span><br><span class="line">        Canvas canvas = <span class="keyword">new</span> Canvas(bitmap);</span><br><span class="line">        drawable.setBounds(<span class="number">0</span>, <span class="number">0</span>, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());</span><br><span class="line">        drawable.draw(canvas);</span><br><span class="line">        <span class="keyword">return</span> bitmap;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><h4 id="bitmap的常见用法"><a href="#bitmap的常见用法" class="headerlink" title="bitmap的常见用法"></a>bitmap的常见用法</h4><h6 id="图片合成："><a href="#图片合成：" class="headerlink" title="图片合成："></a>图片合成：</h6><p>多张图片通过canvas绘制到一起；通过canvas.drawBitmap(bitmap, src, src, paint)裁剪图片；</p>
+<h6 id="制作圆角图片："><a href="#制作圆角图片：" class="headerlink" title="制作圆角图片："></a>制作圆角图片：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Bitmap <span class="title">toRoundCorner</span><span class="params">(Bitmap bitmap, <span class="keyword">int</span> pixels)</span> </span>&#123;</span><br><span class="line">        Bitmap roundCornerBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);</span><br><span class="line">        Canvas canvas = <span class="keyword">new</span> Canvas(roundCornerBitmap);</span><br><span class="line">        <span class="keyword">int</span> color = <span class="number">0xff424242</span>;<span class="comment">// int color = 0xff424242;</span></span><br><span class="line">        Paint paint = <span class="keyword">new</span> Paint();</span><br><span class="line">        paint.setColor(color);</span><br><span class="line">        <span class="comment">// 防止锯齿</span></span><br><span class="line">        paint.setAntiAlias(<span class="keyword">true</span>);</span><br><span class="line">        Rect rect = <span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, bitmap.getWidth(), bitmap.getHeight());</span><br><span class="line">        RectF rectF = <span class="keyword">new</span> RectF(rect);</span><br><span class="line">        <span class="keyword">float</span> roundPx = pixels;</span><br><span class="line">        <span class="comment">// 相当于清屏</span></span><br><span class="line">        canvas.drawARGB(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="comment">// 先画了一个带圆角的矩形</span></span><br><span class="line">        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);</span><br><span class="line">        paint.setXfermode(<span class="keyword">new</span> PorterDuffXfermode(PorterDuff.Mode.SRC_IN));</span><br><span class="line">        <span class="comment">// 再把原来的bitmap画到现在的bitmap！！！注意这个理解</span></span><br><span class="line">        canvas.drawBitmap(bitmap, rect, rect, paint);</span><br><span class="line">        <span class="keyword">return</span> roundCornerBitmap;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/07/2017-06-07-VideoView/" rel="next" title="使用VideoView遇到的问题">
+                <i class="fa fa-chevron-left"></i> 使用VideoView遇到的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/26/2017-09-26-span/" rel="prev" title="Span">
+                Span <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2017/09/16/2017-9-16-bitmap/"
+           data-title="bitmap的使用" data-url="http://yoursite.com/2017/09/16/2017-9-16-bitmap/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="henry" />
+            
+              <p class="site-author-name" itemprop="name">henry</p>
+              <p class="site-description motion-element" itemprop="description">吾生也有涯，而知也无涯</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建bitmap的几种方式"><span class="nav-number">2.</span> <span class="nav-text">创建bitmap的几种方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bitmap的位移，缩放等操作"><span class="nav-number">3.</span> <span class="nav-text">bitmap的位移，缩放等操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在bitmap上画图"><span class="nav-number">4.</span> <span class="nav-text">在bitmap上画图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bitmap和drawable"><span class="nav-number">5.</span> <span class="nav-text">bitmap和drawable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bitmap的常见用法"><span class="nav-number">6.</span> <span class="nav-text">bitmap的常见用法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#图片合成："><span class="nav-number">6.0.1.</span> <span class="nav-text">图片合成：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#制作圆角图片："><span class="nav-number">6.0.2.</span> <span class="nav-text">制作圆角图片：</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">henry</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"henry-newbie"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
